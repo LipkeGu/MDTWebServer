@@ -7,15 +7,12 @@ namespace MDTWebService
 	{
 		static SQLDatabase db = new SQLDatabase();
 		static HTTPSocket ws = new HTTPSocket(81, "mdt/");
-		static HTTPSocket web = new HTTPSocket(82, "");
+		static HTTPSocket web = new HTTPSocket(82, string.Empty);
 
 		static void Main(string[] args)
 		{
 			ws.HTTPDataReceived += Ws_HTTPDataReceived;
-			ws.HTTPDataSend += Ws_HTTPDataSend;
-
 			web.HTTPDataReceived += Web_HTTPDataReceived;
-			web.HTTPDataSend += Web_HTTPDataSend;
 
 			var x = string.Empty;
 			while (x != "-exit")
@@ -23,11 +20,9 @@ namespace MDTWebService
 
 			web.Dispose();
 			ws.Dispose();
+
 			db.Close();
 		}
-
-		private static void Web_HTTPDataSend(object sender, HTTPDataSendEventArgs e) {}
-		private static void Ws_HTTPDataSend(object sender, HTTPDataSendEventArgs e) {}
 
 		private static void Web_HTTPDataReceived(object sender, HTTPDataReceivedEventArgs e)
 		{

@@ -35,8 +35,8 @@
 
 function MsgBox(type, title, message)
 {
-	var x = "<div id=\"nv_cbox_header\">" + title + "</div>\n";
-	x += "<div id=\"nv_cbox_content\">" + message + "</div>\n";
+	var x = "<div class=\"" + type + "\">" + title + "</div>\n";
+	x += "<div class=\"" + type + "\">" + message + "</div>\n";
 
 	return x;
 }

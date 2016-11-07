@@ -15,19 +15,22 @@ namespace MDTWebService.Klassen
 		public SQLDatabase(string database = "database.sqlite", int version = 3)
 		{
 			this.dataBase = Path.Combine(Environment.CurrentDirectory, database);
-			this.version = version;
+			if (File.Exists(this.dataBase))
+			{
+				this.version = version;
 
-			this.sqlConn = new SQLiteConnection("Data Source={0};Version={1};"
-				.F(this.dataBase, this.version));
-
-			this.sqlConn.Open();
+				this.sqlConn = new SQLiteConnection("Data Source={0};Version={1};".F(this.dataBase, this.version));
+				this.sqlConn.Open();
+			}
+			else
+			{
+				Console.WriteLine("Cant find Database file: {0}", this.dataBase);
+			}
 		}
 
 		public int Count(string table, string condition, string value)
 		{
-			var cmd = new SQLiteCommand("SELECT Count({0}) FROM {1} WHERE {0} LIKE '{2}'"
-				.F(condition,table,value), this.sqlConn);
-
+			var cmd = new SQLiteCommand("SELECT Count({0}) FROM {1} WHERE {0} LIKE '{2}'".F(condition,table,value), this.sqlConn);
 			cmd.CommandType = System.Data.CommandType.Text;
 
 			return Convert.ToInt32(cmd.ExecuteScalar());
@@ -36,7 +39,6 @@ namespace MDTWebService.Klassen
 		public Dictionary<uint, NameValueCollection> SQLQuery(string sql)
 		{
 			var cmd = new SQLiteCommand(sql, this.sqlConn);
-
 			cmd.CommandType = System.Data.CommandType.Text;
 			cmd.ExecuteNonQuery(System.Data.CommandBehavior.Default);
 

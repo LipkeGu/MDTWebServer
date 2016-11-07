@@ -10,13 +10,20 @@ namespace MDTWebService
 
 		public HTTPSocket(int port, string path)
 		{
-			this.socket = new HttpListener();
-			var endpoint = "http://*:{0}/{1}".F(port, path);
-			this.socket.Prefixes.Add(endpoint);
-			this.socket.Start();
+			try
+			{
+				this.socket = new HttpListener();
 
-			if (this.socket.IsListening)
-				this.socket.BeginGetContext(new AsyncCallback(this.GetContext), null);
+				this.socket.Prefixes.Add("http://*:{0}/{1}".F(port, path));
+				this.socket.Start();
+
+				if (this.socket.IsListening)
+					this.socket.BeginGetContext(new AsyncCallback(this.GetContext), null);
+			}
+			catch (HttpListenerException e)
+			{
+				Console.WriteLine("HTTP: {0}", e);
+			}
 		}
 
 		public event HTTPDataReceivedEventHandler HTTPDataReceived;
@@ -24,13 +31,13 @@ namespace MDTWebService
 
 		public void Dispose() { this.Close(); }
 
-		internal void OnHTTPDataSend(HttpListenerContext context)
+		private void OnHTTPDataSend(HttpListenerContext context)
 		{
 			var evtargs = new HTTPDataSendEventArgs();
 			this.HTTPDataSend?.Invoke(this, evtargs);
 		}
 
-		internal void OnHTTPDataReceived(HttpListenerContext context)
+		private void OnHTTPDataReceived(HttpListenerContext context)
 		{
 			var evtargs = new HTTPDataReceivedEventArgs();
 			evtargs.Request = this.context.Request;
@@ -55,7 +62,7 @@ namespace MDTWebService
 				catch {}
 		}
 
-		internal void Close()
+		private void Close()
 		{
 			if (this.socket != null)
 				this.socket.Close();

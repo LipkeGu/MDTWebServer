@@ -63,9 +63,6 @@ namespace MDTWebService
 						}
 
 						l = Functions.GetComputerEntry("Computer", entry[1], t, param, ref db);
-
-						if (!string.IsNullOrEmpty(l))
-							Console.WriteLine("Got request from '{0}' for '{1}' -> {2}", request.RemoteEndPoint, param, l);
 					}
 
 					b += "<string xmlns=\"{0}://{1}/mdt/\">{2}</string>".F(request.IsSecureConnection ? "https" : "http", request.Headers["Host"], l);

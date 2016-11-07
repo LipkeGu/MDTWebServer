@@ -7,7 +7,8 @@ namespace MDTWebService
 	{
 		public static void Create(string path)
 		{
-			File.Create(path);
+			var x = File.Create(path);
+			x.Dispose();
 		}
 
 		public static void Write(string path, ref byte[] data, long offset = 0)
